@@ -8,6 +8,10 @@
 #                                                                       #
 #########################################################################
 #Fix allowDrawing variable not stopping glitch from multiplayer when changing spot variable when setting up
+#Add mismatch feature so user or program can identify if there is a mismatch in multiplayer data and it'll be able to update it
+#Add back button after pressing no for restart
+#Fix multiplayer not updating without moving mouse/pressing keyboard/clicking on the window
+#If you press cancel in the port/IP input for joining a multiplayer server, it should show a cancellation screen and then go back to the introduction screen
 
 from turtle import Turtle, Screen
 import time, socket, random, nmap, threading
@@ -1392,8 +1396,19 @@ def clearEverythingAndRestartGame():
     turnTitle.clear()
     startGame()
 
-
-introduction()
 global screen
 screen = Screen()
+
+try:
+    tempScanner = nmap.PortScanner()
+    check_host = socket.gethostbyname(local_ip)
+    tempScanner.scan(check_host, '1', '-v')
+    introduction()
+except Exception as e:
+    print(e)
+    turnValueTurtle.clear()
+    showTurnValue('Install nmap to use multiplayer features', 'center', ('Arial', 40, 'bold'), 0, 160, 255, 0, 0)
+    time.sleep(2)
+    turnValueTurtle.clear()
+    introduction()
 screen.mainloop()
